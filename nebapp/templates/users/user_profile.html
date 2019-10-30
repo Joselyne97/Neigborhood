@@ -1,0 +1,79 @@
+{%extends "users/base.html"%}
+
+
+
+
+
+{% block content %}
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="container">
+   
+<div class="row">
+  
+  {%if user_profile%}
+
+<div class="col-md-5">
+
+<img src="{{user_profile.profile_pic.url}}" class="img-responsive img-circle center-block" alt="" style="width: 200px; height: 200px;">
+
+<br>
+
+
+<h4 style="text-align: center"><strong> {{user_profile.full_name}}</strong></h4><br>
+
+<h4 style="text-align: center">
+  {% autoescape on %}
+        {{user_profile.bio| safe}}
+       {% endautoescape %}
+</h4>
+
+
+<h4 style="text-align: center"><strong>Email address:</strong> {{user_profile.email}}</h4>
+<h4 style="text-align: center"><strong>Phone number:</strong> {{user_profile.phone_number}}</h4>
+
+
+<br>
+</div>
+
+
+       
+
+    <div class="row">
+      <div class="col-md-4">
+          <h4>{{user_profile.user.username}}</h4>
+
+      </div>
+
+      <div class="col-md-4">
+          <a href="{%url 'edit-profile'%}"><button type="submit" class="btn btn-default">Edit Profile</button></a>
+      </div>
+        
+        
+      <div class="col-md-4">
+        <div class="dropdown">
+          <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+            Settings
+          </button>
+          <div class="dropdown-menu">
+
+            <a class="dropdown-item" href="/accounts/password/change">Change Password</a>
+          <a class="dropdown-item" href="/logout">Logout</a>
+          
+          </div>
+        </div>
+        
+        
+        </div>
+{%endif%}
+</div>
+
+</div>
+
+</div>
+
+     
+     
+ 
+   
+
+    {% endblock %}
