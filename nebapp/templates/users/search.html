@@ -1,0 +1,28 @@
+{%extends "users/base.html"%}
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    {% if neighbourhoods%}
+      <h2>Found {{ neighbourhoods|length }} of searched term {{message}}</h2>
+    {% else %}
+      <h2> Found 0 articles for the search term {{message}}</h2>
+    {% endif %}
+
+  </div>
+
+  <div class="row">
+
+  {% if neighbourhoods %}
+    {% for neighbourhood in neighbourhoods %}
+      <div class="col-sm-6">
+          <h4>{{neighbourhood.description}}</h4>
+          <h4><strong>Location: </strong>{{neighbourhood.location}}</h4>
+
+      </div>
+    {% endfor %}
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
