@@ -1,8 +1,8 @@
 from django.shortcuts import render,redirect
 from django.http  import HttpResponse,Http404,HttpResponseRedirect
 import datetime as dt
-from .models import Profile
-from .forms import NewProfileForm
+from .models import Profile,Neighbourhood
+from .forms import NewProfileForm,HoodForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -16,15 +16,14 @@ from django.db.models import Max,F
 @login_required(login_url='/accounts/login/')
 def welcome(request):
     current_user = request.user
+    neighbourhoods=Neighbourhood.objects.all()
 
-
-    return render(request,'users/index.html')
+    return render(request,'users/index.html',locals())
 
 @login_required(login_url='/accounts/login/')
 def user_profile(request):
     current_user = request.user
-    # projects = Project.objects.filter(user=current_user).all()
-    user_profile = Profile.objects.filter(user=current_user.id).first()
+    user_profile = Profile.objects.get(user=request.user)
     
 
     return render(request, 'users/user_profile.html', { 'user_profile':user_profile})
@@ -48,6 +47,23 @@ def edit_profile(request):
             form=NewProfileForm()
 
     return render(request, 'users/edit_profile.html', {'form':form,})
+
+
+@login_required(login_url='/accounts/login/')
+def search_results(request):
+    if 'neighbourhood' in request.GET and request.GET['neighbourhood']:
+        search_term= request.GET.get('neighbourhood')
+        searched_neighbourhoods=Neighbourhood.search_by_title(search_term)
+        message=f'{search_term}'
+
+        return render(request,'users/search.html',{'message':message,'neighbourhoods':searched_neighbourhoods})
+
+    else:
+        message="You haven't searched for any neighbourhood"
+        return render(request, 'users/search.html',{'message':message})
+
+
+
 
 
 
