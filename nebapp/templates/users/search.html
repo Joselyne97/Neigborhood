@@ -1,11 +1,19 @@
 {%extends "users/base.html"%}
+{%load static%}
+
+{% block styles%}
+{{block.super}}
+<link href="https://fonts.googleapis.com/css?family=Fredoka+One|Patua+One|Philosopher" rel="stylesheet"> 
+<link rel="stylesheet" href="{% static 'css/neb.css' %}">
+{% endblock %}
+
 
 {% block content %}
 <div class="container">
 
   <div class="row">
-    {% if neighbourhoods%}
-      <h2>Found {{ neighbourhoods|length }} of searched term {{message}}</h2>
+    {% if hood%}
+      <h2>Found {{ hood|length }} of searched term {{message}}</h2>
     {% else %}
       <h2> Found 0 articles for the search term {{message}}</h2>
     {% endif %}
@@ -14,13 +22,26 @@
 
   <div class="row">
 
-  {% if neighbourhoods %}
-    {% for neighbourhood in neighbourhoods %}
+  {% if hood %}
+    {% for hood in hood %}
+
       <div class="col-sm-6">
-          <h4>{{neighbourhood.description}}</h4>
-          <h4><strong>Location: </strong>{{neighbourhood.location}}</h4>
+          <div class="panel panel-info">
+              <div class="panel-heading">{{hood.name}}</div>
+              <div class="panel-body">
+          <h5 class="description">{{hood.description}}</h5>
+          <h5 class="location"><strong>Location: </strong>{{hood.location}}</h5>
+      
+      
+      
+        </div>
+
+        <div class="panel-footer">
+            <a href="{% url 'joinhood' hood.id %}" class="btn btn-info btn-md">Join Hood</a>
+        </div>
 
       </div>
+    </div>
     {% endfor %}
   {% endif %}
   </div>
