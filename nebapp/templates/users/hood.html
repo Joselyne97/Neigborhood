@@ -1,0 +1,107 @@
+{%extends "users/base.html"%}
+{% load static%}
+{% block styles%}
+{{block.super}}
+<link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Lilita+One|Titan+One" rel="stylesheet"> 
+<link rel="stylesheet" href="{% static 'css/hood.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+<br><br><br><br><br><br><br><br><br>
+<div class="container">
+    {% for hood in hoods%}
+    <div class="header">
+        <h1 class="head">Welcome {{hood.name}} resident</h1><hr>
+        <h3 class="title">Description</h3><br>
+        <h5 class="description">{{hood.description}}</h5><br>
+        <h3 class="title">Emergency contanct:</h3>
+        <h5 class="description">Police contact: {{hood.police_contact}}</h5><br>
+        <h5 class="description">Hospital contact: {{hood.hospital_contact}}</h5><br>
+
+        <a href="{% url 'update-hood' hood.id %}">
+            <button type="button" class="btn btn-warning btn btn-sm">Exit the Hood</button>
+    </a>
+    </div><br><br><br>
+
+
+    {%endfor%}
+
+    <div class="header">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#busi">View post</a></li>
+            <li class="active"><a data-toggle="tab" href="#tech">View business</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="busi">
+                    <a href="{%url 'new-post' %}" class="btn btn-success btn btn-sm">Add a post</a>
+            
+                    {% if posts%}
+                    {% for post in posts %}
+                    <div class="row">
+                    <div class="col-md-6">
+
+                    <h3>Topic: {{post.topic}}</h3><br>
+                    <h5>Description: {{post.description}}</h5><br>
+
+
+                </div>
+
+                    </div>
+                    {%endfor%}
+                    {%else%}
+                    <center>
+                        <h5>There is no post yet!</h5>
+                    </center>
+
+                    {%endif%}
+
+
+
+                
+
+                </div>
+
+                <div class="tab-pane fade" id="tech">
+                        <a href="{%url 'new-post' %}" class="btn btn-primary btn btn-sm">Add Business</a>
+
+                        {% if business%}
+                        
+
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Business Email</th>
+          </tr>
+
+          <tr>
+          {% for business in business %}
+            <td>{{busi.business_name}}</td>
+            <td>{{busi.business_description}}</td>
+            <td>{{busi.business_email}}</td>
+
+        </tr>
+        {%endfor%}
+
+        </table>
+      {%endif%}
+      {%else%}
+      <center>
+        <h4 class="detail">You haven't joined any neighbourhood yet</h4>
+      </center>
+
+    {% endif %}
+                </div>
+
+        </div>
+    </div>
+
+
+
+
+</div>
+
+{%endblock%}
