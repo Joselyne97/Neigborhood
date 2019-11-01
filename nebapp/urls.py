@@ -16,7 +16,11 @@ urlpatterns=[
     url(r'^newhood/$', views.create_hood, name='new-hood'),
     url(r'^updatehood/(\d+)$', views.update_hood, name='update-hood'),
     url(r'^deletehood/(\d+)$', views.delete_hood, name='delete-hood'),
-
+    url(r'^joinhood/(\d+)$', views.join, name='join-hood'),
+    url(r'^addbusiness/$', views.new_bussiness, name='new-business'),
+    url(r'^exithood/(\d+)$', views.exit_hood, name='exit-hood'),
+    url(r'^addpost/$', views.new_post, name='new-post'),
+    
     
 ]
 
