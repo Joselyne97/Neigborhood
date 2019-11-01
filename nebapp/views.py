@@ -22,7 +22,7 @@ def welcome(request):
         posts = Post.get_post_by_hood(id=current_user.join.hood_id)
         business = Business.get_businesses(id= current_user.join.hood_id)
 
-        return render(request,'users/index.html', {'hoods':hoods, 'members':members, 'posts':posts, 'business':business})
+        return render(request,'users/hood.html', {'hoods':hoods, 'members':members, 'posts':posts, 'business':business})
 
     else:
         hoods = Neighbourhood.objects.all()
@@ -134,7 +134,7 @@ def exit_hood(request, id):
     return redirect('welcome')
 
 @login_required(login_url='/accounts/login/')
-def add_bussiness(request):
+def new_bussiness(request):
     current_user = request.user
     hoods = Neighbourhood.objects.all()
     for hood in hoods:
@@ -158,7 +158,7 @@ def add_bussiness(request):
 
 
 @login_required(login_url='/accounts/login/')
-def create_post(request):
+def new_post(request):
     current_user = request.user
     hoods = Neighbourhood.objects.all()
     for hood in hoods:
