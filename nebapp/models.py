@@ -9,7 +9,7 @@ class Neighbourhood(models.Model):
    
     name=models.CharField(max_length=50)
     description=HTMLField()
-    location=models.CharField(max_length=40, choices=places)
+    location=models.CharField(max_length=40)
     police_contact=models.IntegerField(default='112')
     hospital_contact=models.IntegerField(default='911')
     user=models.ForeignKey(User, on_delete=models.CASCADE)
@@ -42,10 +42,10 @@ class Neighbourhood(models.Model):
 
 class Profile(models.Model):
 
-    bio = HTMLField()
+    # bio = HTMLField()
     user=models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     hood = models.ForeignKey(Neighbourhood, on_delete=models.CASCADE,null=True, default='Kigali')
-
+    # profile_pic = models.ImageField(upload_to = 'pic/', blank=True, null=True)
     # @receiver(post_save, sender=User)
     # def create_user_profile(sender, instance, **kwargs):
     #     instance.profile.save()
@@ -76,7 +76,7 @@ class Profile(models.Model):
 class Business(models.Model):
     business_name=models.CharField(max_length=40)
     business_description=HTMLField()
-    email=models.EmailField()
+    business_email=models.EmailField()
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     hood=models.ForeignKey(Neighbourhood,on_delete=models.CASCADE, null=True,blank=True)
 
@@ -127,7 +127,7 @@ class Joining(models.Model):
 
 class Post(models.Model):
     topic=models.CharField(max_length=80)
-    post=HTMLField()
+    description=models.TextField()
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     hood=models.ForeignKey(Neighbourhood,on_delete=models.CASCADE)
 
