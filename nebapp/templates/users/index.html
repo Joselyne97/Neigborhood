@@ -1,10 +1,13 @@
 {%extends "users/base.html"%}
+{% load static%}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Lilita+One|Titan+One" rel="stylesheet"> 
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     
     <title>Post project</title>
 </head>
@@ -13,7 +16,28 @@
         {% block content %}
         <br><br><br>
         <div class="container">
+            {%for hood in hoods %}
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">{{hood.name}}</div>
+                    <div class="panel-body">
+                        <h4 class="description">{{hood.description}}</h4>
+                        <h4 class="location">{{hood.location}}</h4>
+                    </div>
+                    <div class="panel-footer">
+                        <a href="{% url 'join-hood' hood.id %}" class="btn btn-outline-primary btn-sm">Join Hood</a>
 
+                        {% if hood.user_id == user.id %}
+
+                        <a href="{% url 'update-hood' hood.id %}" class="btn btn-info btn btn-sm">Update hood</a>
+                        <a href="{% url 'delete-hood' hood.id %}" class="btn btn-danger btn btn-sm">Delete hood</a>
+
+                        {%endif%}
+
+
+                    </div>
+                </div>
+            </div>   
           
             
 
