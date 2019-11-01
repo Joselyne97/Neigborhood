@@ -11,9 +11,12 @@ from tinymce.models import HTMLField
 urlpatterns=[
     url(r'^$', views.welcome, name="welcome"),
     url(r'^profile$', views.user_profile, name='user-profile'),
-    url(r'^edit/profile$', views.edit_profile, name="edit-profile"),
+    # url(r'^edit/profile$', views.edit_profile, name="edit-profile"),
     url(r'^search/', views.search_results, name='search_results'),
-    
+    url(r'^newhood/$', views.create_hood, name='new-hood'),
+    url(r'^updatehood/(\d+)$', views.update_hood, name='update-hood'),
+    url(r'^deletehood/(\d+)$', views.delete_hood, name='delete-hood'),
+
     
 ]
 
