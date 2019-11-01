@@ -1,15 +1,15 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Profile,Neighbourhood,Post,Business
+from .models import Neighbourhood,Post,Business
 
-class NewProfileForm(forms.ModelForm):
-    class Meta:
-        model= Profile
-        fields = ['bio']
-        exclude =['user']
+# class NewProfileForm(forms.ModelForm):
+#     class Meta:
+#         model= Profile
+#         fields = ['bio']
+#         exclude =['user']
 
-class HoodForm(forms.ModelForm):
+class NewHoodForm(forms.ModelForm):
     class Meta:
         model= Neighbourhood
         fields = ['name','description','location','police_contact','hospital_contact']
@@ -20,7 +20,7 @@ class NewBusinessForm(forms.ModelForm):
         model= Business
         exclude=['user','hood']
 
-class NewPostForm(form.ModelForm):
+class NewPostForm(forms.ModelForm):
     class Meta:
         model= Post
         exclude=['user','hood']
