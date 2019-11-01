@@ -1,71 +1,53 @@
 {%extends "users/base.html"%}
 
-
+{% block styles%}
+{{block.super}}
+<link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Lilita+One|Titan+One" rel="stylesheet"> 
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
 
 
 
 {% block content %}
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br>
 <div class="container">
    
-<div class="row">
-  
-  {%if user_profile%}
-
-<div class="col-md-5">
-
-<img src="{{user_profile.profile_pic.url}}" class="img-responsive img-circle center-block" alt="" style="width: 200px; height: 200px;">
-
-<br>
+<div class="header">
+  <center>
+    <h3 class="name">{{user.username}}</h3>
+  </center>
 
 
-<h4 style="text-align: center"><strong> {{user_profile.full_name}}</strong></h4><br>
+  {%if user.join%}
+  <h5 class="detail">Neighbourhood name: {{user.join.hood.name}}</h5>
+  <h5 class="detail">Location: {{user.join.hood.location}}</h5>
+  {% if busi%}
+        <h2 class="detail">Your business:</h2>
 
-<h4 style="text-align: center">
-  {% autoescape on %}
-        {{user_profile.bio| safe}}
-       {% endautoescape %}
-</h4>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Business Email</th>
+          </tr>
 
+          <tr>
+          {% for business in business %}
+            <td>{{busi.business_name}}</td>
+            <td>{{busi.business_description}}</td>
+            <td>{{busi.business_email}}</td>
 
-<h4 style="text-align: center"><strong>Email address:</strong> {{user_profile.email}}</h4>
-<h4 style="text-align: center"><strong>Phone number:</strong> {{user_profile.phone_number}}</h4>
+        </tr>
+        {%endfor%}
 
+        </table>
+      {%endif%}
+      {%else%}
+      <center>
+        <h4 class="detail">You haven't joined any neighbourhood yet</h4>
+      </center>
 
-<br>
-</div>
-
-
-       
-
-    <div class="row">
-      <div class="col-md-4">
-          <h4>{{user_profile.user.username}}</h4>
-
-      </div>
-
-      <div class="col-md-4">
-          <a href="{%url 'edit-profile'%}"><button type="submit" class="btn btn-default">Edit Profile</button></a>
-      </div>
-        
-        
-      <div class="col-md-4">
-        <div class="dropdown">
-          <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-            Settings
-          </button>
-          <div class="dropdown-menu">
-
-            <a class="dropdown-item" href="/accounts/password/change">Change Password</a>
-          <a class="dropdown-item" href="/logout">Logout</a>
-          
-          </div>
-        </div>
-        
-        
-        </div>
-{%endif%}
-</div>
+    {% endif %}
 
 </div>
 
