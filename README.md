@@ -1,6 +1,6 @@
 ## Project name:
 
-Awward app
+Neighborhood watch app
 
 ## Author:
 
@@ -15,7 +15,7 @@ Joselyne MPAYIMANA
 
 ## Project description:
 
- We were required to create an app where the user will view posted projects and their details, the user will post a project to be rated and reviewed and rate and review other's projects, search for projects, view projects overall score and view his or her profile page.
+ We were required to create an app where the user will Sign in with the application to start using,set up a profile about a user and a general location and my neighborhood name, the user will be able to find a list of different businesses in my neighborhood, the user will beable to find Contact Information for the health department and Police authorities near my neighborhood and the user will be able to Create Posts that will be visible to everyone in my neighborhood, the user will be able to change the neighborhood when he or she decide to move out.
 
  ## Technology used:
 
@@ -31,7 +31,7 @@ Joselyne MPAYIMANA
 
  ## Copyright and license information:
 
- &#9400; Made in October.2019, by Jo
+ &#9400; Made in November.2019, by Jo
 
 
 
