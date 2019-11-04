@@ -1,65 +1,61 @@
 from django.shortcuts import render,redirect
 from django.http  import HttpResponse,Http404,HttpResponseRedirect
 import datetime as dt
-from .models import Profile,Neighbourhood,Business,Post,Joining
-from .forms import NewHoodForm,NewBusinessForm,NewPostForm
+from .models import Profile,Neighbourhood,Business,Post,Location,Comment
+from .forms import NewHoodForm,NewBusinessForm,NewPostForm,NewCommentForm,NewProfileForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from .serializer import ProfileSerializer,ProjectSerializer
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import status
-from django.db.models import Max,F
+
 
 
 @login_required(login_url='/accounts/login/')
 def welcome(request):
     current_user = request.user
-    if Joining.objects.filter(user_id=current_user).exists():
-        hoods = Neighbourhood.objects.get(pk=current_user.join.hood_id)
-        members = Profile.get_user_by_hood(id= current_user.join.hood_id).all()
-        posts = Post.get_post_by_hood(id=current_user.join.hood_id)
-        business = Business.get_businesses(id= current_user.join.hood_id)
-
-        return render(request,'users/hood.html', {'hoods':hoods, 'members':members, 'posts':posts, 'business':business})
-
-    else:
-        hoods = Neighbourhood.objects.all()
-        return render(request, 'users/index.html',{'hoods':hoods})
+    date = dt.date.today()
+    hoods = Neighbourhood.objects.all()
+ 
+    return render(request, 'users/index.html',{'date':date, 'hoods':hoods})
 
 
 @login_required(login_url='/accounts/login/')
-def user_profile(request, user_id):
+def user_profile(request):
     current_user = request.user
     title= "Profile"
-    user_profile = Profile.objects.get(user_id=user_id)
-    business = Business.objects.filter(user_id=user_id).all()
-    hoods = Neighbourhood.objects.filter(user_id=user_id).all()
-    users = User.objects.get(id=user_id)
+    user_profile= Profile.objects.filter(user=current_user)
+    hoods = Neighbourhood.objects.all()
+    if len(user_profile)<1:
+        user_profile='No profile info'
+
+    else:
+        user_profile= Profile.objects.get(user=current_user)
+
+
+    return render(request, 'users/user_profile.html', { 'user_profile':user_profile, 'hoods':hoods, 'title':title})
+
+
+@login_required(login_url='/accounts/login/')
+def edit_profile(request):
+    current_user = request.user
     
+    if request.method == 'POST':
+        form=NewProfileForm(request.POST, request.FILES, instance=request.user)
 
-    return render(request, 'users/user_profile.html', { 'user_profile':user_profile, 'hoods':hoods, 'business':business, 'users':users, 'title':title})
+        if form.is_valid():
+            profile=form.save(commit=False)
+            profile.user = current_user
+            profile.save()
 
+            return redirect('user-profile')
 
-# @login_required(login_url='/accounts/login/')
-# def edit_profile(request):
-#     current_user = request.user
-    
-#     if request.method == 'POST':
-#         form=NewProfileForm(request.POST, request.FILES)
+    else:
+            form=NewProfileForm(instance=request.user)
 
-#         if form.is_valid():
-#             profile=form.save(commit=False)
-#             profile.user = current_user
-#             profile.save()
-
-#             return redirect('user-profile')
-
-#     else:
-#             form=NewProfileForm()
-
-#     return render(request, 'users/edit_profile.html', {'form':form,})
+    return render(request, 'users/edit_profile.html', {'form':form})
 
 
 @login_required(login_url='/accounts/login/')
@@ -80,105 +76,119 @@ def search_results(request):
 def create_hood(request):
     current_user = request.user
     if request.method =='POST':
-        form = NewHoodForm(request.POST)
+        form = NewHoodForm(request.POST, request.FILES)
         if form.is_valid():
             hood = form.save(commit=False)
             hood.user = current_user
             hood.save()
-            return redirect('welcome')
-
-        else:
-            form = NewHoodForm()
-            return render(request, 'users/new_hood.html', {'form':form})
-
-@login_required(login_url='/accounts/login/')
-def update_hood(request, id):
-    current_user = request.user
-    neighbourhood = Neighbourhood.objects.get(pk=id)
-    if request.method == 'POST':
-        form = NewHoodForm(request.POST, instance = neighbourhood)
-        if form.is_valid():
-            hood = form.save(commit=False)
-            hood.user = current_user
-            hood.save()
-            return redirect('welcome')
-
-        else:
-            form = NewHoodForm(instance=neighbourhood)
-            return render(request, 'users/update_hood.html', {'form':form})
-
-
-@login_required(login_url='/accounts/login/')
-def delete_hood(request, id):
-    Neighbourhood.objects.filter(pk=id).delete()
-    return redirect('welcome')
-
-
-@login_required(login_url='/accounts/login/')
-def join(request, hoodid):
-    current_user = request.user
-    our_hood = Neighbourhood.objects.get(pk = hoodid)
-    if Joining.objects.filter(user=current_user).exists():
-        Joining.objects.filter(user_id=current_user).update(hood_id = our_hood.id)
+        return redirect('welcome')
 
     else:
-        Joining(user=current_user, hood_id = our_hood.id).save()
-    messages.success(request, "Thank you for joining the hood, Welcome in our hood!")
-    return redirect('welcome')
-
-@login_required(login_url='/accounts/login/')
-def exit_hood(request, id):
-    current_user = request.user
-    Joining.objects.get(user_id = current_user).delete()
-    messages.error(request, "You have exit the hood!")
-    return redirect('welcome')
-
-@login_required(login_url='/accounts/login/')
-def new_bussiness(request):
-    current_user = request.user
-    hoods = Neighbourhood.objects.all()
-    for hood in hoods:
-        if Joining.objects.filter(user_id = request.user).exists():
-            if request.method =='POST':
-                form = NewBusinessForm(request.POST)
-                if form.is_valid():
-                    business = form.save(commit = False)
-                    business.user = current_user
-                    business.hood = hood
-                    business.save()
-                    messages.success(request, "Thank you for adding a business")
-                    return redirect('welcome')
-
-                else:
-                    form = NewBusinessForm()
-                    return render(request, 'users/business.html', {'form':form})
-
-            else:
-                messages.error(request, 'Sorry! You have to join the hood before creating a business')
+        form = NewHoodForm()
+    return render(request, 'users/new_hood.html', {'form':form})
 
 
 @login_required(login_url='/accounts/login/')
-def new_post(request):
+def search_business(request):
+    if 'business' in request.GET and request.GET['business']:
+        search_term= request.GET.get('business')
+        searched_business=Business.search_by_title(search_term)
+        message=f'{search_term}'
+
+        return render(request,'users/search_business.html',{'message':message,'business':searched_business})
+
+    else:
+        message="You haven't searched for any business"
+        return render(request, 'users/search.html',{'message':message})
+
+
+
+
+
+def location(request):
+    date = dt.date.today()
+    return render(request, 'users/location.html',{"date":date})
+
+
+@login_required(login_url='/accounts/login/')
+def my_hood(request,id):
+    date = dt.date.today()
     current_user = request.user
-    hoods = Neighbourhood.objects.all()
-    for hood in hoods:
-        if Joining.objects.filter(user_id = current_user).exists():
-            if request.method == 'POST':
-                form = NewPostForm(request.POST)
-                if form.is_valid():
-                    post = form.save(commit=False)
-                    post.user=current_user
-                    post.hood = hood
-                    post.save()
-                    messages.success(request, 'You have added the post!')
-                    return redirect('welcome')
+    our_hood=Neighbourhood.objects.get(id=id)
+    posts=Post.objects.filter(hood=our_hood)
+    business=Business.objects.filter(hood=our_hood)
+    return render(request, 'users/hood.html',{'our_hood':our_hood, 'posts':posts,'business':business,'date':date})
 
-                else:
-                    form= NewPostForm()
-                    return render(request, 'users/post.html', {'form':form})
 
-            else:
-                messages.error(request, 'sorry!!You have to create a post when you have joined the hood!')
+
+@login_required(login_url='/accounts/login/')
+def new_bussiness(request,id):
+    date = dt.date.today()
+    current_user = request.user
+    our_hood = Neighbourhood.objects.get(id=id)
+    business= Business.objects.filter(hood=our_hood)
+    form = NewBusinessForm()
+    if request.method =='POST':
+        form = NewBusinessForm(request.POST, request.FILES)
+        if form.is_valid():
+            business = form.save(commit = False)
+            business.user = current_user
+            business.hood = our_hood
+            business.save()
+            
+            return redirect(request, 'my-hood')
+
+    else:
+        form = NewBusinessForm()
+        return render(request, 'users/business.html', {'form':form,'business':business,'our_hood':our_hood,'date':date})
+
+
+@login_required(login_url='/accounts/login/')
+def new_post(request,id):
+    date = dt.date.today()
+    current_user = request.user
+    hoods = Neighbourhood.objects.get(id=id)
+    comments = Comment.objects.filter(post=id).order_by('-pub_date')
+    posts=Post.objects.filter(hood=hoods)
+    form = NewPostForm()
+
+    if request.method == 'POST':
+        form = NewPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user=current_user.user
+            post.hood = hood
+            post.save()
+                    
+            return redirect('my-hood')
+
+    else:
+        form= NewPostForm()
+        return render(request, 'users/post.html', {'form':form, 'date':date,'hoods':hoods,'posts':posts,'comments':comments})
+
+@login_required(login_url='/accounts/login/')
+def new_comment(request,id):
+    current_user=request.user
+
+    try:
+        comments = Comment.objects.filter(post_id=id)
+    except:
+        comments = []
+    posts= Post.objects.get(id=id)
+    if request.method =="POST":
+        form = NewCommentForm(request.POST,request.FILES)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = current_user
+            comment.post = posts
+            comment.save()
+    else:
+        form = NewCommentForm()
+
+    return render(request, 'users/comment.html',{'post':post,"comments":comments,"form":form})
+            
+
+            
 
 
 

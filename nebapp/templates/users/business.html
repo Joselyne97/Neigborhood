@@ -22,7 +22,7 @@
   {% block content %}
   <br><br><br><br><br>
   <div class="container">
-  <form  action="{%url 'new-business'%}" method="post" enctype="multipart/form-data">
+  <form  action="{%url 'new-business' our_hood.id %}" method="post" enctype="multipart/form-data">
     {%csrf_token%}
 
     {% bootstrap_form form%}

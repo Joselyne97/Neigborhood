@@ -1,6 +1,7 @@
 {%extends "users/base.html"%}
-
+{% load staticfiles %}
 {%load static%}
+{% load bootstrap4 %} 
 
 {% block styles%}
 {{block.super}}
@@ -26,23 +27,32 @@
   {% if hood %}
     {% for hood in hood %}
 
-      <div class="col-sm-6">
-          <div class="panel panel-info">
-              <div class="panel-heading">{{hood.name}}</div>
-              <div class="panel-body">
-          <h5 class="description">{{hood.description}}</h5>
-          <h5 class="location"><strong>Location: </strong>{{hood.location}}</h5>
-      
-      
-      
-        </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>{{hood.name}}</h3>
+            </div>
+            <div class="card-image">
+                    <img src="{{hood.image.url}}" class="img-responsive" alt="" style="width: 300px; height: 250px;">
+            </div>
 
-        <div class="panel-footer">
-            <a href="{% url 'joinhood' hood.id %}" class="btn btn-info btn-md">Join Hood</a>
-        </div>
+            <div class="card-body">
+                <h4 class="description">Detail: {{hood.description}}</h4>
+                <h4 class="description">Residents: {{hood.population}}</h4>  
+                <h4 class="description">Police contact: {{hood.police_contact}}</h4>
+                <h4 class="description">Health facility: {{hood.hospital_contact}}</h4>
+                   
+            </div>
 
-      </div>
-    </div>
+            <div class="card-footer">
+                <a href="{%url 'my-hood' hood.id%}"><button class="btn btn-outline-primary btn-sm">View Hood</a>&nbsp;
+
+            
+
+
+            </div>
+        </div>
+    </div>   
     {% endfor %}
   {% endif %}
   </div>

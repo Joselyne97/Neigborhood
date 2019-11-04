@@ -1,5 +1,7 @@
 {%extends "users/base.html"%}
 {% load static%}
+{% load bootstrap4 %} 
+{% load staticfiles %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,38 +9,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Lilita+One|Titan+One" rel="stylesheet"> 
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css">
     
-    <title>Post project</title>
+    <title>Hood watch</title>
 </head>
 <body>
 
         {% block content %}
         <br><br><br>
         <div class="container">
+
+            <h1>Welcome to the neighbrhood watch!</h1>
+            <h6 style="text-align:center;">{{date|date:"l d F Y"}}</h6>
+
+            <h5>HHHHHHHHHHHHHHHHHHHHH  FF</h5>
+
+            <a href="{% url 'new-hood'%}">
+                <button class="btn btn-outline-primary btn-sm">Create a hood</button>
+            </a>
+            <div class="row">
             {%for hood in hoods %}
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <div class="panel panel-info">
-                    <div class="panel-heading">{{hood.name}}</div>
-                    <div class="panel-body">
-                        <h4 class="description">{{hood.description}}</h4>
-                        <h4 class="location">{{hood.location}}</h4>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{{hood.name}}</h3>
                     </div>
-                    <div class="panel-footer">
-                        <a href="{% url 'join-hood' hood.id %}" class="btn btn-outline-primary btn-sm">Join Hood</a>
+                    <div class="card-image">
+                            <img src="{{hood.image.url}}" class="img-responsive" alt="" style="width: 300px; height: 250px;">
+                    </div>
 
-                        {% if hood.user_id == user.id %}
+                    <div class="card-body">
+                        <h4 class="description">Detail: {{hood.description}}</h4>
+                        <h4 class="description">Residents: {{hood.population}}</h4>  
+                        <h4 class="description">Police contact: {{hood.police_contact}}</h4>
+                        <h4 class="description">Health facility: {{hood.hospital_contact}}</h4>
+                           
+                    </div>
 
-                        <a href="{% url 'update-hood' hood.id %}" class="btn btn-info btn btn-sm">Update hood</a>
-                        <a href="{% url 'delete-hood' hood.id %}" class="btn btn-danger btn btn-sm">Delete hood</a>
+                    <div class="card-footer">
+                        <a href="{%url 'my-hood' hood.id%}"><button class="btn btn-outline-primary btn-sm">View Hood</a>
 
-                        {%endif%}
+                    
 
 
                     </div>
                 </div>
             </div>   
-          
+            {%endfor%}
+          </div>
             
 
         </div><hr>

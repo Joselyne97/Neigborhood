@@ -22,11 +22,11 @@
   {% block content %}
   <br><br><br><br><br>
   <div class="container">
-  <form  action="{%url 'new-post'%}" method="post" enctype="multipart/form-data">
+  <form  action="{%url 'new-post' our_hood.id%}" method="post" enctype="multipart/form-data">
     {%csrf_token%}
 
     {% bootstrap_form form%}
-    <input type="submit" class="btn btn-success btn-lg" value="Post">
+    <input type="submit" class="btn btn-success btn-sm" value="Post">
   </form>
 </div>
   {% endblock %}
